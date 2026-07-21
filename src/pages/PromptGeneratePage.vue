@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,6 +19,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useConfig } from "@/composables/useConfig";
 import OpenAI from "openai";
 
+const { t } = useI18n();
 const { config, isConfigured } = useConfig();
 
 const functionDescription = ref("");
@@ -52,6 +54,10 @@ const languageOptions = [
   { value: "Bash", label: "Bash" },
 ];
 
+const systemRole = computed(() =>
+  t("prompt.system_role").replaceAll("\n", ""),
+);
+
 const combinedPrompt = computed(() => {
   const parts: string[] = [];
 
@@ -59,22 +65,22 @@ const combinedPrompt = computed(() => {
     let description = functionDescription.value.trim();
 
     if (selectedLanguage.value) {
-      description = `请使用 ${selectedLanguage.value} 编程语言帮我实现函数: ${description}`;
+      description = `${t("prompt.lang_prefix", { language: selectedLanguage.value })}${description}`;
     }
 
     if (generateUnitTest.value) {
-      description = `${description},并且生成对应的单元测试代码`;
+      description = `${description}${t("prompt.unit_test_suffix")}`;
     }
 
-    parts.push(`## 函数描述\n${description}`);
+    parts.push(`## ${t("prompt.function_description")}\n${description}`);
   }
 
   if (functionCallExample.value.trim()) {
-    parts.push(`## 函数调用示例\n${functionCallExample.value.trim()}`);
+    parts.push(`## ${t("prompt.function_call_example")}\n${functionCallExample.value.trim()}`);
   }
 
   if (functionReturnExample.value.trim()) {
-    parts.push(`## 函数返回示例\n${functionReturnExample.value.trim()}`);
+    parts.push(`## ${t("prompt.function_return_example")}\n${functionReturnExample.value.trim()}`);
   }
 
   if (parts.length === 0) {
@@ -90,12 +96,12 @@ watch(combinedPrompt, (newVal) => {
 
 async function handleSend() {
   if (!isConfigured()) {
-    responseMessage.value = "请先前往配置页面填写 AI 接口配置";
+    responseMessage.value = t("prompt.not_configured");
     return;
   }
 
   if (!promptText.value.trim()) {
-    responseMessage.value = "请输入 prompt 内容";
+    responseMessage.value = t("prompt.empty_prompt");
     return;
   }
 
@@ -109,16 +115,12 @@ async function handleSend() {
       dangerouslyAllowBrowser: true,
     });
 
-    const systemRole = `
-你是一个专业的代码助手。 根据用户提供的函数描述、调用示例和返回示例，生成对应的函数，
-帮助开发者更好地理解和使用该函数。`.replaceAll("\n", "");
-
     const completion = await client.chat.completions.create({
       model: config.value.model,
       messages: [
         {
           role: "system",
-          content: systemRole,
+          content: systemRole.value,
         },
         {
           role: "user",
@@ -131,7 +133,7 @@ async function handleSend() {
     responseMessage.value = completion.choices[0]?.message?.content ?? "";
   } catch (error) {
     const err = error as Error;
-    responseMessage.value = `请求失败: ${err.message}`;
+    responseMessage.value = t("prompt.request_failed", { message: err.message });
   } finally {
     isSending.value = false;
   }
@@ -142,19 +144,19 @@ async function handleSend() {
   <div class="container mx-auto max-w-4xl px-4 py-8 space-y-6">
     <Card>
       <CardHeader>
-        <CardTitle>Prompt 生成</CardTitle>
+        <CardTitle>{{ t("prompt.title") }}</CardTitle>
       </CardHeader>
       <CardContent class="space-y-4">
         <div class="flex flex-wrap items-center gap-4">
           <div class="flex items-center gap-2">
-            <Label for="selectedLanguage">编程语言</Label>
+            <Label for="selectedLanguage">{{ t("prompt.language_label") }}</Label>
             <Select v-model="selectedLanguage">
               <SelectTrigger id="selectedLanguage" class="w-40">
-                <SelectValue placeholder="选择语言" />
+                <SelectValue :placeholder="t('prompt.language_placeholder')" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>编程语言</SelectLabel>
+                  <SelectLabel>{{ t("prompt.language_group") }}</SelectLabel>
                   <SelectItem v-for="lang in languageOptions" :key="lang.value" :value="lang.value">
                     <SelectItemText>{{ lang.label }}</SelectItemText>
                   </SelectItem>
@@ -165,36 +167,38 @@ async function handleSend() {
 
           <div class="flex items-center gap-2">
             <Checkbox id="generateUnitTest" v-model="generateUnitTest" />
-            <Label for="generateUnitTest">是否生成单元测试</Label>
+            <Label for="generateUnitTest">{{ t("prompt.unit_test") }}</Label>
           </div>
         </div>
 
         <div class="space-y-2">
-          <Label for="functionDescription">函数描述 <span class="text-destructive">*</span></Label>
+          <Label for="functionDescription">
+            {{ t("prompt.function_description") }} <span class="text-destructive">*</span>
+          </Label>
           <Textarea
             id="functionDescription"
             v-model="functionDescription"
-            placeholder="请输入函数描述，例如：计算两个数的和"
+            :placeholder="t('prompt.function_description_placeholder')"
             rows="4"
           />
         </div>
 
         <div class="space-y-2">
-          <Label for="functionCallExample">函数调用示例（可选）</Label>
+          <Label for="functionCallExample">{{ t("prompt.function_call_example") }}</Label>
           <Textarea
             id="functionCallExample"
             v-model="functionCallExample"
-            placeholder="请输入函数调用示例，例如：add(1, 2)"
+            :placeholder="t('prompt.function_call_example_placeholder')"
             rows="3"
           />
         </div>
 
         <div class="space-y-2">
-          <Label for="functionReturnExample">函数返回示例（可选）</Label>
+          <Label for="functionReturnExample">{{ t("prompt.function_return_example") }}</Label>
           <Textarea
             id="functionReturnExample"
             v-model="functionReturnExample"
-            placeholder="请输入函数返回示例，例如：3"
+            :placeholder="t('prompt.function_return_example_placeholder')"
             rows="3"
           />
         </div>
@@ -203,22 +207,22 @@ async function handleSend() {
 
     <Card>
       <CardHeader>
-        <CardTitle>Prompt 预览与编辑</CardTitle>
+        <CardTitle>{{ t("prompt.prompt_title") }}</CardTitle>
       </CardHeader>
       <CardContent class="space-y-4">
         <div class="space-y-2">
-          <Label for="promptText">Prompt 内容</Label>
+          <Label for="promptText">{{ t("prompt.prompt_label") }}</Label>
           <Textarea
             id="promptText"
             v-model="promptText"
-            placeholder="生成的 prompt 将显示在这里，您可以手动修改..."
+            :placeholder="t('prompt.prompt_placeholder')"
             rows="10"
           />
         </div>
         <div class="flex gap-3">
-          <Button @click="handleReset" variant="outline" class="flex-1">重置</Button>
+          <Button @click="handleReset" variant="outline" class="flex-1">{{ t("prompt.reset") }}</Button>
           <Button @click="handleSend" :disabled="isSending" class="flex-1">
-            {{ isSending ? "发送中..." : "发送" }}
+            {{ isSending ? t("prompt.sending") : t("prompt.send") }}
           </Button>
         </div>
       </CardContent>
@@ -226,7 +230,7 @@ async function handleSend() {
 
     <Card v-if="responseMessage">
       <CardHeader>
-        <CardTitle>AI 响应</CardTitle>
+        <CardTitle>{{ t("prompt.ai_response") }}</CardTitle>
       </CardHeader>
       <CardContent>
         <div class="rounded-md border bg-muted/50 p-4 whitespace-pre-wrap text-sm">

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useConfig } from "@/composables/useConfig";
 
+const { t } = useI18n();
 const { config, save, reset } = useConfig();
 
 const localEndpoint = ref(config.value.endpoint);
@@ -40,40 +42,51 @@ function handleReset() {
 
 <template>
   <div class="container mx-auto max-w-2xl px-4 py-8 space-y-6">
+    <Alert>
+      <AlertDescription>{{ t("config.storage_alert") }}</AlertDescription>
+    </Alert>
+
     <Card>
       <CardHeader>
-        <CardTitle>AI 配置</CardTitle>
+        <CardTitle>{{ t("config.title") }}</CardTitle>
       </CardHeader>
       <CardContent class="space-y-6">
         <div class="space-y-2">
-          <Label for="endpoint">Endpoint</Label>
+          <Label for="endpoint">{{ t("config.endpoint") }}</Label>
           <Input
             id="endpoint"
             v-model="localEndpoint"
-            placeholder="https://api.openai.com/v1/chat/completions"
+            :placeholder="t('config.endpoint_placeholder')"
           />
-          <p class="text-xs text-muted-foreground">最终请求 {{ localEndpoint }}/chat/completions</p>
+          <p class="text-xs text-muted-foreground">
+            {{ t("config.endpoint_hint", { endpoint: localEndpoint }) }}
+          </p>
         </div>
 
         <div class="space-y-2">
-          <Label for="accessToken">Access Token</Label>
-          <Input id="accessToken" v-model="localAccessToken" type="password" placeholder="sk-..." />
+          <Label for="accessToken">{{ t("config.access_token") }}</Label>
+          <Input
+            id="accessToken"
+            v-model="localAccessToken"
+            type="password"
+            :placeholder="t('config.access_token_placeholder')"
+          />
         </div>
 
         <div class="space-y-2">
-          <Label for="model">Model</Label>
-          <Input id="model" v-model="localModel" placeholder="gpt-4o" />
+          <Label for="model">{{ t("config.model") }}</Label>
+          <Input
+            id="model"
+            v-model="localModel"
+            :placeholder="t('config.model_placeholder')"
+          />
         </div>
 
         <div class="flex gap-3">
-          <Button @click="handleSave" class="flex-1">保存配置</Button>
-          <Button @click="handleReset" variant="outline" class="flex-1">恢复默认</Button>
+          <Button @click="handleSave" class="flex-1">{{ t("config.save") }}</Button>
+          <Button @click="handleReset" variant="outline" class="flex-1">{{ t("config.reset") }}</Button>
         </div>
       </CardContent>
     </Card>
-
-    <Alert>
-      <AlertDescription>配置仅保存到本地 localStorage</AlertDescription>
-    </Alert>
   </div>
 </template>

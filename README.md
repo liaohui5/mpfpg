@@ -12,6 +12,7 @@
 - **Prompt 预览与编辑**：生成的 Prompt 可手动修改，源字段变化时自动同步
 - **AI 请求**：集成 OpenAI SDK，一键发送 Prompt 并展示响应
 - **配置管理**：Endpoint / Access Token / Model 配置，保存到 localStorage
+- **多语言**：支持中文和英文，导航栏一键切换
 - **响应式布局**：支持亮色/暗色主题
 
 ## 技术栈
