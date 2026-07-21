@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useConfig } from "@/composables/useConfig";
 
 const { config, save, reset } = useConfig();
@@ -38,7 +39,7 @@ function handleReset() {
 </script>
 
 <template>
-  <div class="container mx-auto max-w-2xl px-4 py-8">
+  <div class="container mx-auto max-w-2xl px-4 py-8 space-y-6">
     <Card>
       <CardHeader>
         <CardTitle>AI 配置</CardTitle>
@@ -51,25 +52,17 @@ function handleReset() {
             v-model="localEndpoint"
             placeholder="https://api.openai.com/v1/chat/completions"
           />
+          <p class="text-xs text-muted-foreground">最终请求 {{ localEndpoint }}/chat/completions</p>
         </div>
 
         <div class="space-y-2">
           <Label for="accessToken">Access Token</Label>
-          <Input
-            id="accessToken"
-            v-model="localAccessToken"
-            type="password"
-            placeholder="sk-..."
-          />
+          <Input id="accessToken" v-model="localAccessToken" type="password" placeholder="sk-..." />
         </div>
 
         <div class="space-y-2">
           <Label for="model">Model</Label>
-          <Input
-            id="model"
-            v-model="localModel"
-            placeholder="gpt-4o"
-          />
+          <Input id="model" v-model="localModel" placeholder="gpt-4o" />
         </div>
 
         <div class="flex gap-3">
@@ -78,5 +71,9 @@ function handleReset() {
         </div>
       </CardContent>
     </Card>
+
+    <Alert>
+      <AlertDescription>配置仅保存到本地 localStorage</AlertDescription>
+    </Alert>
   </div>
 </template>

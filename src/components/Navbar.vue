@@ -20,7 +20,7 @@ const navItems = [
           <span class="hidden font-bold sm:inline-block text-lg">Pure Function Prompt Generator</span>
         </RouterLink>
       </div>
-      <nav class="flex items-center space-x-1">
+      <nav class="flex items-center space-x-1 ml-auto">
         <RouterLink
           v-for="item in navItems"
           :key="item.path"

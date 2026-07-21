@@ -30,6 +30,15 @@ const responseMessage = ref("");
 const selectedLanguage = ref<string>("");
 const generateUnitTest = ref(false);
 
+function handleReset() {
+  functionDescription.value = "";
+  functionCallExample.value = "";
+  functionReturnExample.value = "";
+  selectedLanguage.value = "";
+  generateUnitTest.value = false;
+  responseMessage.value = "";
+}
+
 const languageOptions = [
   { value: "JavaScript", label: "JavaScript" },
   { value: "TypeScript", label: "TypeScript" },
@@ -206,9 +215,12 @@ async function handleSend() {
             rows="10"
           />
         </div>
-        <Button @click="handleSend" :disabled="isSending" class="w-full">
-          {{ isSending ? "发送中..." : "发送" }}
-        </Button>
+        <div class="flex gap-3">
+          <Button @click="handleReset" variant="outline" class="flex-1">重置</Button>
+          <Button @click="handleSend" :disabled="isSending" class="flex-1">
+            {{ isSending ? "发送中..." : "发送" }}
+          </Button>
+        </div>
       </CardContent>
     </Card>
 
