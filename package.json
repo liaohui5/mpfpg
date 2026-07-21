@@ -1,6 +1,7 @@
 {
   "name": "mini-pure-function-prompt-generator",
   "version": "0.0.1",
+  "license": "MIT",
   "author": "<liaohui5>i@liaohui5.cn",
   "type": "module",
   "scripts": {
@@ -32,3 +33,4 @@
     "vue-tsc": "^3.3.5"
   }
 }
+
