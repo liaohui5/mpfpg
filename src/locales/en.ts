@@ -32,7 +32,7 @@ export default {
   config: {
     title: "AI Configuration",
     endpoint: "Endpoint",
-    endpoint_placeholder: "https://api.openai.com/v1/chat/completions",
+    endpoint_placeholder: "https://api.openai.com/v1",
     endpoint_hint: "Final request: {endpoint}/chat/completions",
     access_token: "Access Token",
     access_token_placeholder: "sk-...",

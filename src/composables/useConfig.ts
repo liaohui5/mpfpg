@@ -6,10 +6,10 @@ export interface AiConfig {
   model: string;
 }
 
-const STORAGE_KEY = "mini-function-prompt-generator-config";
+const STORAGE_KEY = "mini-pure-function-prompt-generator-config";
 
 const defaultConfig: AiConfig = {
-  endpoint: "https://api.openai.com/v1/chat/completions",
+  endpoint: "https://api.openai.com/v1",
   accessToken: "",
   model: "gpt-4o",
 };

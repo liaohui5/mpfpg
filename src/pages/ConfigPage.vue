@@ -42,10 +42,6 @@ function handleReset() {
 
 <template>
   <div class="container mx-auto max-w-2xl px-4 py-8 space-y-6">
-    <Alert>
-      <AlertDescription>{{ t("config.storage_alert") }}</AlertDescription>
-    </Alert>
-
     <Card>
       <CardHeader>
         <CardTitle>{{ t("config.title") }}</CardTitle>
@@ -75,18 +71,20 @@ function handleReset() {
 
         <div class="space-y-2">
           <Label for="model">{{ t("config.model") }}</Label>
-          <Input
-            id="model"
-            v-model="localModel"
-            :placeholder="t('config.model_placeholder')"
-          />
+          <Input id="model" v-model="localModel" :placeholder="t('config.model_placeholder')" />
         </div>
 
         <div class="flex gap-3">
           <Button @click="handleSave" class="flex-1">{{ t("config.save") }}</Button>
-          <Button @click="handleReset" variant="outline" class="flex-1">{{ t("config.reset") }}</Button>
+          <Button @click="handleReset" variant="outline" class="flex-1">{{
+            t("config.reset")
+          }}</Button>
         </div>
       </CardContent>
     </Card>
+
+    <Alert>
+      <AlertDescription>{{ t("config.storage_alert") }}</AlertDescription>
+    </Alert>
   </div>
 </template>
