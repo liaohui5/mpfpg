@@ -220,8 +220,8 @@ async function handleSend() {
           />
         </div>
         <div class="flex gap-3">
-          <Button @click="handleReset" variant="outline" class="flex-1">{{ t("prompt.reset") }}</Button>
-          <Button @click="handleSend" :disabled="isSending" class="flex-1">
+          <Button @click="handleReset" variant="outline" class="flex-1 hover:cursor-pointer">{{ t("prompt.reset") }}</Button>
+          <Button @click="handleSend" :disabled="isSending" class="flex-1 hover:cursor-pointer">
             {{ isSending ? t("prompt.sending") : t("prompt.send") }}
           </Button>
         </div>

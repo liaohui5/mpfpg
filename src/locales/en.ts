@@ -41,5 +41,6 @@ export default {
     save: "Save Configuration",
     reset: "Reset to Default",
     storage_alert: "Configuration is saved to localStorage only",
+    storage_alert_success: "Saved successfully",
   },
 };

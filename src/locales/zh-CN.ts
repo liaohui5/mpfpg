@@ -41,5 +41,6 @@ export default {
     save: "保存配置",
     reset: "恢复默认",
     storage_alert: "配置仅保存到本地 localStorage",
+    storage_alert_success: "保存成功",
   },
 };
