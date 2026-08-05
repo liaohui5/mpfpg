@@ -39,7 +39,7 @@ function handleLocaleChange(value: unknown) {
     <div class="container mx-auto flex h-14 max-w-screen-2xl items-center px-4 space-x-4">
       <div class="mr-4 hidden md:flex">
         <RouterLink to="/prompt" class="flex items-center space-x-2">
-          <span class="font-bold text-lg">Pure Function Prompt Generator</span>
+          <span class="font-bold text-lg">Mini Pure Function Prompt Generator</span>
         </RouterLink>
       </div>
 
