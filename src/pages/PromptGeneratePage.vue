@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
+import { useLocalStorage } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -22,15 +23,30 @@ import OpenAI from "openai";
 const { t } = useI18n();
 const { config, isConfigured } = useConfig();
 
-const functionDescription = ref("");
-const functionCallExample = ref("");
-const functionReturnExample = ref("");
-const promptText = ref("");
+const functionDescription = useLocalStorage(
+  "mini-pure-function-prompt-generator-function-description",
+  "",
+);
+const functionCallExample = useLocalStorage(
+  "mini-pure-function-prompt-generator-function-call-example",
+  "",
+);
+const functionReturnExample = useLocalStorage(
+  "mini-pure-function-prompt-generator-function-return-example",
+  "",
+);
+const promptText = useLocalStorage("mini-pure-function-prompt-generator-prompt-text", "");
 const isSending = ref(false);
 const responseMessage = ref("");
 
-const selectedLanguage = ref<string>("");
-const generateUnitTest = ref(false);
+const selectedLanguage = useLocalStorage(
+  "mini-pure-function-prompt-generator-selected-language",
+  "",
+);
+const generateUnitTest = useLocalStorage(
+  "mini-pure-function-prompt-generator-generate-unit-test",
+  false,
+);
 
 function handleReset() {
   functionDescription.value = "";
@@ -38,6 +54,7 @@ function handleReset() {
   functionReturnExample.value = "";
   selectedLanguage.value = "";
   generateUnitTest.value = false;
+  promptText.value = "";
   responseMessage.value = "";
 }
 
@@ -54,9 +71,7 @@ const languageOptions = [
   { value: "Bash", label: "Bash" },
 ];
 
-const systemRole = computed(() =>
-  t("prompt.system_role").replaceAll("\n", ""),
-);
+const systemRole = computed(() => t("prompt.system_role").replaceAll("\n", ""));
 
 const combinedPrompt = computed(() => {
   const parts: string[] = [];
@@ -76,7 +91,7 @@ const combinedPrompt = computed(() => {
   }
 
   if (functionCallExample.value.trim()) {
-    parts.push(`## ${t("prompt.function_call_example")}\n${functionCallExample.value.trim()}`);
+    parts.push(`## ${t("prompt.function_call_example")}\n\`\`\`${selectedLanguage.value}\n${functionCallExample.value.trim()}\n\`\`\``);
   }
 
   if (functionReturnExample.value.trim()) {
@@ -220,7 +235,9 @@ async function handleSend() {
           />
         </div>
         <div class="flex gap-3">
-          <Button @click="handleReset" variant="outline" class="flex-1 hover:cursor-pointer">{{ t("prompt.reset") }}</Button>
+          <Button @click="handleReset" variant="outline" class="flex-1 hover:cursor-pointer">{{
+            t("prompt.reset")
+          }}</Button>
           <Button @click="handleSend" :disabled="isSending" class="flex-1 hover:cursor-pointer">
             {{ isSending ? t("prompt.sending") : t("prompt.send") }}
           </Button>
