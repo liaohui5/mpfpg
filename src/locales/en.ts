@@ -37,6 +37,10 @@ export default {
     access_token: "Access Token",
     access_token_placeholder: "sk-...",
     model: "Model",
+    model_list: "Model List",
+    model_select: "Select Model",
+    model_options: "Available Models",
+
     model_placeholder: "gpt-4o",
     save: "Save Configuration",
     reset: "Reset to Default",

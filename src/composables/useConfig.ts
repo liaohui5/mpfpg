@@ -4,6 +4,7 @@ export interface AiConfig {
   endpoint: string;
   accessToken: string;
   model: string;
+  models: string[];
 }
 
 const STORAGE_KEY = "mini-pure-function-prompt-generator-config";
@@ -12,6 +13,7 @@ const defaultConfig: AiConfig = {
   endpoint: "https://api.openai.com/v1",
   accessToken: "",
   model: "gpt-4o",
+  models: ["gpt-4o"],
 };
 
 function readConfig(): AiConfig {
