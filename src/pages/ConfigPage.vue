@@ -42,10 +42,10 @@ function startHideNotifyTimer() {
 watch(
   () => [config.value.endpoint, config.value.accessToken, config.value.model, config.value.models],
   ([endpoint, accessToken, model, models]) => {
-    localEndpoint.value = endpoint;
-    localAccessToken.value = accessToken;
-    localModel.value = model;
-    localModels.value = models ? models.join(',') : '';
+    localEndpoint.value = Array.isArray(endpoint) ? endpoint[0] : endpoint;
+    localAccessToken.value = Array.isArray(accessToken) ? accessToken[0] : accessToken;
+    localModel.value = Array.isArray(model) ? model[0] : model;
+    localModels.value = models ? (Array.isArray(models) ? models.join(',') : models) : '';
   },
 );
 
