@@ -18,9 +18,18 @@ const localEndpoint = ref(config.value.endpoint);
 const localAccessToken = ref(config.value.accessToken);
 const localModel = ref(config.value.model);
 const localModels = ref(config.value.models ? config.value.models.join(',') : '');
-const modelOptions = computed(() => {
-  return localModels.value.split(',').map(m => m.trim()).filter(m => m);
-});
+function parseModels(input: string): string[] {
+  return input.split(',').map(m => m.trim()).filter(m => m);
+}
+const modelOptions = computed(() => parseModels(localModels.value));
+
+function handleModelsInput(value: string | number) {
+  const text = String(value);
+  localModels.value = text;
+  // 输入模型列表时自动选中第一个模型；列表为空则清空选择
+  const options = parseModels(text);
+  localModel.value = options[0] ?? "";
+}
 
 const isShowNotify = ref(false)
 
@@ -69,7 +78,7 @@ function handleReset() {
 </script>
 
 <template>
-  <div class="container mx-auto max-w-2xl px-4 py-8 space-y-6">
+  <div class="container mx-auto max-w-4xl px-4 py-8 space-y-6">
     <Card>
       <CardHeader>
         <CardTitle>{{ t("config.title") }}</CardTitle>
@@ -91,7 +100,8 @@ function handleReset() {
 
         <div class="space-y-2">
           <Label for="modelList">{{ t("config.model") }} ({{ t('config.model_list') }})</Label>
-          <Input id="modelList" v-model="localModels" placeholder="e.g., gpt-4o,gpt-3.5-turbo" />
+          <Input id="modelList" :model-value="localModels" @update:model-value="handleModelsInput"
+            placeholder="e.g., gpt-4o,gpt-3.5-turbo" />
         </div>
         <div class="space-y-2">
           <Label for="modelSelect">{{ t("config.model_select") }}</Label>
